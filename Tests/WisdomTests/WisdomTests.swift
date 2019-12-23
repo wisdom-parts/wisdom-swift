@@ -1,5 +1,5 @@
 import XCTest
-@testable import wisdom_swift
+@testable import Wisdom
 
 final class wisdom_swiftTests: XCTestCase {
     func testExample() {

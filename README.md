@@ -1,7 +1,7 @@
 # Wisdom
 
 Wisdom is a different approach to constructing software that makes it more malleable and more
-evolvable. Wisdom is implemented in [Crystal](http://crystal-lang.org), which is such a comfortable
+evolvable. This version of Wisdom is implemented in [Swift](http://swift.org), which is such a comfortable
 language that I expect everyone will be coding in it soon.
 
 A wise software component is a stateless hierarchy of immutable values, with an
