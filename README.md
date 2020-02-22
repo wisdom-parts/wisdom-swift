@@ -57,7 +57,7 @@ in the value hierarchy, will likely lead to higher performance. It also means th
 wise components with similar value structure can be meaningfully combined into a new one that has a 
 usefully high chance of performing better than either. 
 
-The difference between morphics and OO programming is largely a
+The difference between wise and OO programming is largely a
 difference in style, ecosystem, and tooling, rather than a difference in runtime machinery. Even so,
 the resulting difference in capability is profound.
 
