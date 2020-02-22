@@ -61,7 +61,7 @@ The difference between wise and OO programming is largely a
 difference in style, ecosystem, and tooling, rather than a difference in runtime machinery. Even so,
 the resulting difference in capability is profound.
 
-## Wise Programming
+## Wise Programming Terminology
 
 A wise behavior is called an "imp". (The name is a pun on "implementation"
 and demon.) Each imp forms the root behavior (potentially the sole behavior) of
@@ -72,6 +72,16 @@ A tree or subtree of imps is called a "clan". A clan is a complete implementatio
 of its root imp's face. This face is also considered to be the clan's face.
 A clan's face can be as simple as `Int32`, in which case the clan is as simple as
 the number `42`. A face is described at runtime by a `MetaFace`.
+
+## Wise Programming in Swift
+
+Any Swift data type can be made into a face by implementing the MetaFace protocol on it.
+
+The MetaFace protocol has the following responsibilities:
+* Provide a registry of named imps of the face.
+* Given a suitable `HMap` (see the `joy-data-swift` repo), construct a clan that implements the face.
+
+# Material Not Yet Edited from `wisdom-crystal`
 
 A clan is constructed from a "charter", which is JSON. This can be a JSON object,
 array, or value. The module that
