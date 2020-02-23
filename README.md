@@ -81,17 +81,19 @@ Any Swift data type can be made into a face by implementing the Face protocol on
 
     protocol Face {
         type MetaImp
-        static found(charter: Charter): self
-        static registerMetaImp(name: Qualified Name, metaImp: MetaImp)
         
-        static randomCharter(): Charter
-        static mutateCharter(charter: Charter): Charter
-        static blendCharters(charter1: Charter, charter2: Charter): Charter
+        static func found(charter: Charter) -> self
+        static func register(metaImp: MetaImp, name: Qualified Name)
+        
+        static func randomCharter() -> Charter
+        static func mutateCharter(_ charter: Charter) -> Charter
+        static func blendCharters(_ ch1: Charter, _ ch2: Charter) -> Charter
     }
 
 A `Charter` is an `org.joy-data.HMap`.
 
-Each `Face` type has its own `MetaImp` type. 
+Each `Face` type has its own `MetaImp` type. Each `MetaImp` instance represents a kind of implementation of the face
+and helps carry out the responsibilities defined in the `Face` protocol.
 
 # Material Not Yet Edited from `wisdom-crystal`
 
