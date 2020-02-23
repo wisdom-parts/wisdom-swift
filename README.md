@@ -69,7 +69,7 @@ terms that don't already carry freight in the software domain.
 
 Each node in a wise component's value hierarchy is called an "imp". 
 (The name is a pun on "implementation" and demon.)
-Each imp provides the root implementation (potentially the entire implementation) of
+Each imp provides the root implementation (sometimes the entire implementation) of
 a "face" data type that provides the imp's interface. ("Face" is a pun on human
 face and "interface".) A given face is commonly implemented by multiple imps, which
 represent different ways of carrying out the face's responsibilities. Each imp
@@ -78,7 +78,7 @@ has a globally, permanently unique "qualified name".
 A complete wise component is formed from a tree of imps, which is called a "clan". 
 The face of the clan's root imp is also considered to be the face of the clan.
 A clan's face can be as simple as `Int`, in which case the clan is as simple
-as a single integer value. We can still think of this as a degenerate single-node tree.
+as a single integer value. This single-node base case forms the leaves of a clan.
 
 Each imp declares a set of subordinate "roles" (possible an empty set) to
 which the imp delegates. The imp declares a qualified name and a face for each role.
