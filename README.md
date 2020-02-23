@@ -63,17 +63,31 @@ the resulting difference in capability is profound.
 
 ## Wise Programming Terminology
 
-A wise behavior is called an "imp". (The name is a pun on "implementation"
-and demon.) Each imp forms the root behavior (potentially the sole behavior) of
+We use strange-sounding terminology for wise programming to support its 
+fundamentally new programming style with fresh metaphors, and with words that don't 
+already carry freight in the software domain.
+
+Each node in a wise component's value hierarchy is called an "imp". 
+(The name is a pun on "implementation" and demon.)
+Each imp forms the root behavior (potentially the sole behavior) of
 a corresponding data type, which is called the imp's "face". (The name is a pun on human
-face and "interface".) It is common for multiple imps to represent the same face.
+face and "interface".) A given face is commonly implemented by multiple imps, which
+represent different ways of carrying out the face's responsibilities. Each imp
+has a globally, permanently unique "qualified name".
 
-A tree or subtree of imps is called a "clan". A clan is a complete implementation
-of its root imp's face. This face is also considered to be the clan's face.
-A clan's face can be as simple as `Int32`, in which case the clan is as simple as
-the number `42`.
+A complete wise component is formed from a tree of imps, which is called a "clan". 
+The face of the clan's root imp is also considered to be the face of the clan.
+A clan's face can be as simple as `Int`, in which case the clan is as simple
+as a single integer value. We can still think of this as a degenerate single-node tree.
 
-A clan is constructed at runtime from a specification called a "charter".
+Each imp declares a set of subordinate "roles" (possible an empty set) to
+which the imp delegates. The imp declares a qualified name and a face for each role.
+To form a complete, operational clan, each role must be filled
+by a subordinate clan with that face. These subordinate clans are called "septs".
+
+A clan is constructed at runtime from a specification called a "charter". 
+The charter provides the qualified name of a root imp, plus recursively a
+charter for each of the root imp's roles.
 
 ## Wise Programming in Swift
 
@@ -95,7 +109,7 @@ A `Charter` is an `org.joy-data.HMap`.
 Each `Face` type has its own `MetaImp` type. Each `MetaImp` instance represents a kind of implementation of the face
 and helps carry out the responsibilities defined in the `Face` protocol.
 
-# Material Not Yet Edited from `wisdom-crystal`
+# Material Not Yet Edited from the Crystal and PureScript Predecessors
 
 A clan is constructed from a "charter", which is JSON. This can be a JSON object,
 array, or value. The module that
