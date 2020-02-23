@@ -71,15 +71,27 @@ face and "interface".) It is common for multiple imps to represent the same face
 A tree or subtree of imps is called a "clan". A clan is a complete implementation
 of its root imp's face. This face is also considered to be the clan's face.
 A clan's face can be as simple as `Int32`, in which case the clan is as simple as
-the number `42`. A face is described at runtime by a `MetaFace`.
+the number `42`.
+
+A clan is constructed at runtime from a specification called a "charter".
 
 ## Wise Programming in Swift
 
-Any Swift data type can be made into a face by implementing the MetaFace protocol on it.
+Any Swift data type can be made into a face by implementing the Face protocol on it. Here are some of the main methods:
 
-The MetaFace protocol has the following responsibilities:
-* Provide a registry of named imps of the face.
-* Given a suitable `HMap` (see the `joy-data-swift` repo), construct a clan that implements the face.
+    protocol Face {
+        type MetaImp
+        static found(charter: Charter): self
+        static registerMetaImp(name: Qualified Name, metaImp: MetaImp)
+        
+        static randomCharter(): Charter
+        static mutateCharter(charter: Charter): Charter
+        static blendCharters(charter1: Charter, charter2: Charter): Charter
+    }
+
+A `Charter` is an `org.joy-data.HMap`.
+
+Each `Face` type has its own `MetaImp` type. 
 
 # Material Not Yet Edited from `wisdom-crystal`
 
