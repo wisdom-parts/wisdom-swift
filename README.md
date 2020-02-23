@@ -69,8 +69,8 @@ terms that don't already carry freight in the software domain.
 
 Each node in a wise component's value hierarchy is called an "imp". 
 (The name is a pun on "implementation" and demon.)
-Each imp forms the root behavior (potentially the sole behavior) of
-a corresponding data type, which is called the imp's "face". (The name is a pun on human
+Each imp provides the root implementation (potentially the entire implementation) of
+a "face" data type that provides the imp's interface. ("Face" is a pun on human
 face and "interface".) A given face is commonly implemented by multiple imps, which
 represent different ways of carrying out the face's responsibilities. Each imp
 has a globally, permanently unique "qualified name".
