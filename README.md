@@ -64,8 +64,8 @@ the resulting difference in capability is profound.
 ## Wise Programming Terminology
 
 We use strange-sounding terminology for wise programming to support its 
-fundamentally new programming style with fresh metaphors, and with words that don't 
-already carry freight in the software domain.
+fundamentally new programming style with fresh metaphors, and to giver ouselves new
+terms that don't already carry freight in the software domain.
 
 Each node in a wise component's value hierarchy is called an "imp". 
 (The name is a pun on "implementation" and demon.)
