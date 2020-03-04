@@ -72,8 +72,7 @@ Each node in a wise component's value hierarchy is called an "imp".
 Each imp provides the root implementation (sometimes the entire implementation) of
 a "face" data type that provides the imp's interface. ("Face" is a pun on human
 face and "interface".) A given face is commonly implemented by multiple imps, which
-represent different ways of carrying out the face's responsibilities. Each imp
-has a globally, permanently unique "qualified name".
+represent different ways of carrying out the face's responsibilities.
 
 A complete wise component is formed from a tree of imps, which is called a "clan". 
 The face of the clan's root imp is also considered to be the face of the clan.
@@ -81,161 +80,43 @@ A clan's face can be as simple as `Int`, in which case the clan is as simple
 as a single integer value. This single-node base case forms the leaves of a clan.
 
 Each imp declares a set of subordinate "roles" (possible an empty set) to
-which the imp delegates. The imp declares a qualified name and a face for each role.
+which the imp delegates. The imp declares a face for each role.
 To form a complete, operational clan, each role must be filled
 by a subordinate clan with that face. These subordinate clans are called "septs".
 
-A clan is constructed at runtime from a specification called a "charter". 
-The charter provides the qualified name of a root imp, plus recursively a
-charter for each of the root imp's roles.
+A clan is constructed at runtime from a specification called a "charter".  The charter
+provides information needed to construct a root imp, plus recursively a charter for
+each of the root imp's roles. A charter can be a partial specification; it may leave
+the imp unspecified, or specify the imp but not all of its roles.  But the charter used 
+to construct a clan must be complete.
 
 ## Wise Programming in Swift
 
-Any Swift data type can be made into a face by implementing the Face protocol on it. Here are some of the main methods:
+A face can be represented by any Swift data type. By convention, a polymorphic face is represented as a protocol that is usable as an existential type. (As of this writing, this means it cannot have associated types.) An imp is simply a value of the face type.
 
-    protocol Face {
-        type MetaImp
-        
-        static func found(charter: Charter) -> self
-        static func register(metaImp: MetaImp, name: Qualified Name)
-        
-        static func randomCharter() -> Charter
-        static func mutateCharter(_ charter: Charter) -> Charter
-        static func blendCharters(_ ch1: Charter, _ ch2: Charter) -> Charter
-    }
+In simple cases, a charter is simply an instance of the face data type. For example, 42 is a valid charter for an `Int` face. By convention, a charter for a polymorphic face is itself polymorphic, and is also represented by a protocol that is usable as an existential type.
 
-A `Charter` is an `org.joy-data.HMap`.
+The code that constructs an imp must know how to instantiate it from a charter. For non-polymorphic imps, this can be hardcoded and specific to the imp and charter types. By convention, the protocol that represents the charter for a polymorphic face provides a method for constructing an imp.
 
-Each `Face` type has its own `MetaImp` type. Each `MetaImp` instance represents a kind of implementation of the face
-and helps carry out the responsibilities defined in the `Face` protocol.
+These representations generally adhere to the following conventions.  `nil` represents an unspecified imp. Therefore, 
+roles are represented in charters as optional values. The Wisdom framework provides machinery for converting a 
+partially specified charter into a complete one. To move the burden of role optionality entirely into the framework, 
+charter roles are represented by implicitly unwrapped optionals. 
 
-# Material Not Yet Edited from the Crystal and PureScript Predecessors
+# Important Wise Idioms and Operations
 
-A clan is constructed from a "charter", which is JSON. This can be a JSON object,
-array, or value. The module that
-supports a given face must provide a function that takes a charter argument
-and returns an instance of the face. This is called the "founder function" for
-the face.
+## Constructing a Wise Component in Code
 
-Within an imp's Crystal code, simple data types like `Int32` are
-most commonly handled in the normal Crystal fashion. In this case, a 42 is just a 42.
-But when a simple data type is used as a configurable parameter that adjusts the behavior
-of a clan, it is handled as a face and becomes part of the wise hierarchy.
-So let's go ahead and use our `Int32` example to make these ideas more concrete.
+## Constructing a Wise Component in a UI
 
-To create an `Int32` clan, we first need an appropriate charter.
-We also need a founder function for `Int32`. We might write something like this:
+## Constructing a Wise Component through Machine Learning
 
-```PureScript
-module ObtainAnswer where
+## Textual Representation of a Wise Component
 
-import Prelude
-import Data.Foreign (toForeign)
-import Control.Monad.Eff.Console (log)
+## Creating a Random Wise Component of a Given Type
 
-import Morphics.Number (foundNumber)
+## Randomly Mutating a Wise Component
 
-main = do
-  charter = toForeign {
-    imp: "Morphics.Number.number"
-    data: 42
-  }
-  answer :: Number
-  answer = foundNumber charter
-  log $ "Hello, World! The answer turns out to be " <> show answer <> "."
-```
-
-Ok, that was silly -- and yet, complete. Let's move on to a more representative use case.
-
-Suppose we have a face that is the following PureScript data type:
-
-```PureScript
-type ItemOrder = Item -> Item -> Ordering
-```
-
-Suppose also that we want to have three implementations of `ItemOrder`:
-* `orderBySize :: ItemOrder`
-* `orderByWeight :: ItemOrder`
-* `orderByBlend :: Number -> Number -> ItemOrder` orders by `w * weight + s * size`
-Each implementation is simply a PureScript function. We will encapsulate each function
-in an imp. An imp is described at runtime by a "meta-imp", which is represented
-in PureScript by a value of the record type `MetaImp`.
-
-The charter for an `ItemOrder` needs to provide two pieces of information:
-* It needs to indicate which imp to use.
-* In the case of `orderByBlend`, it needs to supply `w` and `s`.
-
-Charter JSON has an "imp" property that specifies an imp by giving its label:
-```PureScript
-bySizeCharter = { imp: "ItemOrder.orderBySizeLabel" }
-```
-
-An imp's label is defined through the `label` field of the `MetaImp` record type.
-By convention, each imp label is prefixed by the name of the
-module in which instances of that imp are created. In our example, we assume that the
-module is called "ItemOrder".
-
-In our `bySizeCharter` example, we gratuitously use the word "Label" in "orderBySizeLabel"
-to avoid giving the impression that the label magically refers to the function name.
-Although PureScript's JavaScript runtime would make such magic possible, the morphics
-implementation uses no such magic: labels are just strings that are compared at runtime.
-In practice, a much more likely choice of label for the `orderBySize` imp would be
-simply "ItemOrder.orderBySize".
-
-The `orderByBlend` imp adds an interesting new twist: it has parameters `w` and `s`.
-Such imp parameters are called "roles". Although in this particular example they
-are simply numbers, they could have any face. They could be implemented by complex
-clans of their own.
-
-Each meta-imp declares the roles required by that imp. These are exposed through the
-`roles` field of the `MetaImp` record type: `roles :: Array Role`. Just as imps have labels, roles and faces
-also have labels. The role labels in our example are "w" and "s". `Role` is a simple record type:
-```PureScript
-type Role = { label :: String, faceLabel :: String }
-```
-
-As a founder function constructs a clan, it implements each role with a "sept" -- a subordinate clan.
-It is up to the founder function how to capture the imp's septs and make them available
-to the imp for its operation.
-
-An imp is represented in charter JSON as an object with three fields:
-* imp: the label of the imp
-* roles (optional): an object where the keys are role labels and the values are sept charters
-* data (optional): additional data for use by the imp's founder function in constructing the imp
-
-For example, the following JSON would be a reasonable charter for our `orderByBlend` imp:
-```JSON
-{
-  "imp": "ItemOrder.orderByBlend",
-  "roles": {
-    "s": { "imp": "Morphics.Number.number", "data": 0.7 },
-    "w": { "imp": "Morphics.Number.number", "data": 0.3 }
-  }
-}
-```
-
-
-## Important Morphic Idioms and Operations
-
-### Constructing a Morphic Component in Code
-
-Invoke a constructor defined by the root value's type class.
-
-### Constructing a Morphic Component in a UI
-
-In the UI implementation, map classes and their `new` map keys to non-programmer-readable
-labels and descriptions.
-
-### Constructing a Morphic Component through Machine Learning
-
-### Textual Representation of a Morphic Component
-
-Uses Joy's textual representation of values.
-
-### Creating a Random Morphic Component of a Given Type
-
-### Randomly Mutating a Morphic Component
-
-### Mating Two Morphic Components
+## Mating Two Wise Components
 
 
