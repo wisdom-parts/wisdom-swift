@@ -1,5 +1,7 @@
 # Wisdom
 
+**PAUSED INDEFINITELY -- instead see wisdom-kotlin**
+
 Wisdom is a different approach to constructing software that makes it more malleable and more
 evolvable. This version of Wisdom is implemented in [Swift](http://swift.org), which is such a comfortable
 language that I expect everyone will be coding in it soon.
